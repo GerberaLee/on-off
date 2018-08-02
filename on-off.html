@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>ON-OFF</title>
+    <style>
+        div{
+            margin: 20px;
+        }
+        .pull-left{
+            float: left;
+        }
+        .check_label{
+            display: inline-block;
+            margin-left: 10px;
+            margin-top: -5px;
+            width: 80px;
+            height: 30px;
+            /*text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);*/
+            border-radius: 4px;
+            border: 1px solid;
+            border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+            position: relative;
+            background-color: #f0f0f0;
+            background-image: linear-gradient(to bottom, #e6e6e6, #ffffff);
+            cursor: pointer;
+        }
+        #checkOff{
+            display: none;
+        }
+        #checkOff:checked + .check_label{
+            background-image: linear-gradient(to bottom, #0044cc, #0088cc);
+            background-color: #005fcc;
+        }
+
+        .check_label:after{
+            content: '';
+            display: inline-block;
+            position: absolute;
+            top: -1px;
+            margin-left: -2px;
+            border: 1px solid #cccccc;
+            color: #ffffff;
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+            background-color: #f5f5f5;
+            background-image: linear-gradient(to bottom, #ffffff, #e6e6e6);
+            width: 40px;
+            height: 30px;
+            border-bottom-left-radius: 3px;
+            border-top-left-radius: 3px;
+        }
+        #checkOff:checked + .check_label:after{
+            right: -2px;
+            border-bottom-right-radius: 3px;
+            border-top-right-radius: 3px;
+            border-bottom-left-radius: 0;
+            border-top-left-radius: 0;
+        }
+        .check_label:before{
+            content: 'OFF';
+            position: absolute;
+            color: #000;
+            margin-top: 4px;
+            margin-left: 44px;
+        }
+        #checkOff:checked + .check_label:before{
+            content: 'ON';
+            color: #fff;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div><span class="pull-left">ON-OFF:</span> <input type="checkbox" id="checkOff"/><label for="checkOff" class="check_label pull-left"></label> </div>
+</body>
+<script src="js/jquery-1.10.2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#checkOff").on('click', function(){
+            clickSwitch()
+        });
+        $.ajax({
+            url: 'index.php?act=select',
+            type : 'get',
+            dataType: 'JSON',
+            success : function(data){
+//                state = data.status;
+                if(data.status == 'on'){
+                    $("#checkOff").attr('checked',true)
+                }else{
+                    $("#checkOff").attr('checked',false)
+                }
+            }
+        })
+
+        var clickSwitch = function() {
+            var state = ''
+            if ($("#checkOff").is(':checked')) {
+//                console.log("ON status");
+                state = 'on'
+            } else {
+//                console.log("OFF status");
+                state = 'off';
+            }
+            $.ajax({
+                url: 'index.php?act=set&status='+state,
+                type : 'get',
+                dataType: 'jsonp',
+                success : function(data){
+                    console.log(data);
+                }
+            })
+        };
+    });
+</script>
+</html>
